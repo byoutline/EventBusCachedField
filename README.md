@@ -1,6 +1,11 @@
 Lib and readme in development, not yet on maven central.
 
 # EventBusCachedField
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.byoutline.eventbuscachedfield/eventbuscachedfield/badge.svg?style=flat)](http://mvnrepository.com/artifact/com.byoutline.eventbuscachedfield/eventbuscachedfield)
+[![Coverage Status](https://coveralls.io/repos/byoutline/EventBusCachedField/badge.svg?branch=master)](https://coveralls.io/r/byoutline/EventBusCachedField?branch=master)
+ master:  [![Build Status](https://travis-ci.org/byoutline/EventBusCachedField.svg?branch=master)](https://travis-ci.org/byoutline/EventBusCachedField)
+ develop: [![Build Status](https://travis-ci.org/byoutline/EventBusCachedField.svg?branch=develop)](https://travis-ci.org/byoutline/EventBusCachedField)
+ 
 Wrapper for expensive values (like API calls) that post results by greenrobot EventBus. Additionally it guards against displaying data from one user to another.
 
 How to use
