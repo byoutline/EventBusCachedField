@@ -1,7 +1,7 @@
 Lib and readme in development, not yet on maven central.
 
 # EventBusCachedField
-Wrapper for expensives values (like API calls) that post results by greenrobot EventBus.Additionally it guards against displaying data from one user to another.
+Wrapper for expensive values (like API calls) that post results by greenrobot EventBus.Additionally it guards against displaying data from one user to another.
 
 How to use
 ----------
