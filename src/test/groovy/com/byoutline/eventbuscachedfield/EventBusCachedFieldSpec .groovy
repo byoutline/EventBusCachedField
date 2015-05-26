@@ -4,7 +4,7 @@ import com.byoutline.cachedfield.CachedField
 import com.byoutline.cachedfield.FieldState
 import com.byoutline.cachedfield.FieldStateListener
 import com.byoutline.eventcallback.ResponseEvent
-import de.greenrobot.event.EventBus;
+import de.greenrobot.event.EventBus
 import spock.lang.Shared
 import spock.lang.Unroll
 
