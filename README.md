@@ -1,7 +1,7 @@
 Lib and readme in development, not yet on maven central.
 
 # EventBusCachedField
-Wrapper for expensives values (like API calls) that post results by greenrobot EventBus.Additionally it guards against displaying data from one user to another.
+Wrapper for expensive values (like API calls) that post results by greenrobot EventBus. Additionally it guards against displaying data from one user to another.
 
 How to use
 ----------
@@ -72,28 +72,28 @@ See [Cached field](https://github.com/byoutline/CachedField#interface-descriptio
 
 ### Parametric fields ###
 
-<!-- In case your value depends on some argument  (for example API GET call that requires item ID) you can use [EventBusCachedFieldWithArg](https://github.com/byoutline/EventBusCachedField/blob/master/src/main/java/com/byoutline/eventbuscachedfield/EventBusCachedFieldWithArg.java) . It supports same methods but requires you to pass argument to ```post``` and ```refresh``` calls. Only one value will be cached at the time, so changing argument will force a refresh .
+In case your value depends on some argument  (for example API GET call that requires item ID) you can use [EventBusCachedFieldWithArg](https://github.com/byoutline/EventBusCachedField/blob/master/src/main/java/com/byoutline/eventbuscachedfield/EventBusCachedFieldWithArg.java) . It supports same methods but requires you to pass argument to ```post``` and ```refresh``` calls. Only one value will be cached at the time, so changing argument will force a refresh .
 
 If you ask ```EventBusCachedFieldWithArg``` for value with new argument before last call had chance to finish, Success Event will be posted only about with value for current argument. Previous call will be assumed obsolete, and its return value(if any) will be discarded and Error Event will be posted instead.
 
-If you want to check which call to field was completed check ```argValue``` parameter passed to your [ResponseEventWithArg](https://github.com/byoutline/EventBusCachedField/blob/master/src/main/java/com/byoutline/eventbuscachedfield/events/ResponseEventWithArg.java)
+If you want to check which call to field was completed check ```argValue``` parameter passed to your [ResponseEventWithArg](https://github.com/byoutline/IBusCachedField/blob/master/src/main/java/com/byoutline/ibuscachedfield/events/ResponseEventWithArg.java)
 
 
 Prametric field classes have ```withArg``` suffix, and behave same as their no arg counterparts. Split exist only to enforce passing extra argument to methods that depend on it.
 
 without arguments                              | with arguments
 -----------------------------------------------|-----------------------------------------------
-[OttoCachedField](https://github.com/byoutline/OttoCachedField/blob/master/src/main/java/com/byoutline/ottocachedfield/OttoCachedField.java)  | [OttoCachedFieldWithArg](https://github.com/byoutline/OttoCachedField/blob/master/src/main/java/com/byoutline/ottocachedfield/OttoCachedFieldWithArg.java)
-[OttoCachedFieldBuilder](https://github.com/byoutline/OttoCachedField/blob/master/src/main/java/com/byoutline/ottocachedfield/OttoCachedFieldBuilder.java)  | [OttoCachedFieldWithArgBuilder](https://github.com/byoutline/OttoCachedField/blob/master/src/main/java/com/byoutline/ottocachedfield/OttoCachedFieldWithArgBuilder.java)
-[ResponseEvent](https://github.com/byoutline/EventCallback/blob/master/src/main/java/com/byoutline/eventcallback/ResponseEvent.java) | [ResponseEventWithArg](https://github.com/byoutline/OttoCachedField/blob/master/src/main/java/com/byoutline/ottocachedfield/events/ResponseEventWithArg.java)
-[ResponseEventImpl](https://github.com/byoutline/EventCallback/blob/master/src/main/java/com/byoutline/eventcallback/ResponseEventImpl.java) | [ResponseEventWithArgImpl](https://github.com/byoutline/OttoCachedField/blob/master/src/main/java/com/byoutline/ottocachedfield/events/ResponseEventWithArgImpl.java)
+[EventBusCachedField](https://github.com/byoutline/EventBusCachedField/blob/master/src/main/java/com/byoutline/eventbuscachedfield/EventBusCachedField.java)  | [EventBusCachedFieldWithArg](https://github.com/byoutline/EventBusCachedField/blob/master/src/main/java/com/byoutline/eventbuscachedfield/EventBusCachedFieldWithArg.java)
+[EventBusCachedFieldBuilder](https://github.com/byoutline/EventBusCachedField/blob/master/src/main/java/com/byoutline/eventbuscachedfield/EventBusCachedFieldBuilder.java)  | [EventBusCachedFieldWithArgBuilder](https://github.com/byoutline/EventBusCachedField/blob/master/src/main/java/com/byoutline/eventbuscachedfield/EventBusCachedFieldWithArgBuilder.java)
+[ResponseEvent](https://github.com/byoutline/EventCallback/blob/master/src/main/java/com/byoutline/eventcallback/ResponseEvent.java) | [ResponseEventWithArg](https://github.com/byoutline/IBusCachedField/blob/master/src/main/java/com/byoutline/ibuscachedfield/events/ResponseEventWithArg.java)
+[ResponseEventImpl](https://github.com/byoutline/EventCallback/blob/master/src/main/java/com/byoutline/eventcallback/ResponseEventImpl.java) | [ResponseEventWithArgImpl](https://github.com/byoutline/IBusCachedField/blob/master/src/main/java/com/byoutline/ibuscachedfield/events/ResponseEventWithArgImpl.java)
 [Provider](https://docs.oracle.com/javaee/7/api/javax/inject/Provider.html) | [ProviderWithArg](https://github.com/byoutline/CachedField/blob/master/src/main/java/com/byoutline/cachedfield/ProviderWithArg.java)
 
 
-### Builder syntax for OttoCachedField instance creation ###
+### Builder syntax for EventBusCachedField instance creation ###
 You may choose use ```builder``` instead of constructor to create your fields:
 ```java
-new OttoCachedFieldBuilder<>()
+new EventBusCachedFieldBuilder<>()
     .withValueProvider(new Provider<YourExpensiveValue>() {
         @Override
         public YourExpensiveValue get() {
@@ -105,10 +105,7 @@ new OttoCachedFieldBuilder<>()
 ```
 Builder syntax is slightly longer, but makes it obvious which argument does what, and allows for better IDE autocompletion.
 
-Example Project
----------------
-If you want to see complete project that uses OttoCachedField take a look at [Android Live Code Warsaw Flickr project on Github](https://github.com/byoutline/AndroidLiveCodeWarsawFlickr/).
--->
+
 Not an EventBus user?
 ---------------------
 If you do not want to use EventBus check [CachedField](https://github.com/byoutline/CachedField) project.
