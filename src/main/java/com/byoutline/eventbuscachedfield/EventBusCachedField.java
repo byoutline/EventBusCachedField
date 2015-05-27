@@ -26,18 +26,10 @@ public class EventBusCachedField<RETURN_TYPE> extends CachedFieldImpl<RETURN_TYP
     static EventBus defaultBus;
 
     EventBusCachedField(Provider<String> sessionIdProvider, Provider<RETURN_TYPE> valueGetter, ResponseEvent<RETURN_TYPE> successEvent, ErrorEvent errorEvent, EventIBus bus) {
-        this(sessionIdProvider,
+        super(sessionIdProvider,
                 valueGetter,
                 new IBusSuccessListener<RETURN_TYPE>(bus, successEvent),
-                new IBusErrorListener(bus, errorEvent),
-                bus);
-    }
-
-    private EventBusCachedField(Provider<String> sessionProvider,
-                                Provider<RETURN_TYPE> valueGetter,
-                                SuccessListener<RETURN_TYPE> successHandler, ErrorListener errorHandler, EventIBus bus) {
-        super(sessionProvider, valueGetter, successHandler, errorHandler);
-        bus.register(valueGetter);
+                new IBusErrorListener(bus, errorEvent));
     }
 
     public static <RETURN_TYPE> EventBusCachedFieldBuilder<RETURN_TYPE> builder() {

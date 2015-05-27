@@ -22,19 +22,10 @@ public class EventBusCachedFieldWithArg<RETURN_TYPE, ARG_TYPE> extends CachedFie
                                ProviderWithArg<RETURN_TYPE, ARG_TYPE> valueGetter,
                                ResponseEventWithArg<RETURN_TYPE, ARG_TYPE> successEvent,
                                ResponseEventWithArg<Exception, ARG_TYPE> errorEvent, EventIBus bus) {
-        this(sessionIdProvider,
+        super(sessionIdProvider,
                 valueGetter,
                 new IBusSuccessListenerWithArg<RETURN_TYPE, ARG_TYPE>(bus, successEvent),
-                new IBusErrorListenerWithArg<ARG_TYPE>(bus, errorEvent),
-                bus);
-    }
-
-    private EventBusCachedFieldWithArg(Provider<String> sessionProvider,
-                                       ProviderWithArg<RETURN_TYPE, ARG_TYPE> valueGetter,
-                                       SuccessListenerWithArg<RETURN_TYPE, ARG_TYPE> successHandler,
-                                       ErrorListenerWithArg<ARG_TYPE> errorHandler, EventIBus bus) {
-        super(sessionProvider, valueGetter, successHandler, errorHandler);
-        bus.register(valueGetter);
+                new IBusErrorListenerWithArg<ARG_TYPE>(bus, errorEvent));
     }
 
     public static <RETURN_TYPE, ARG_TYPE> EventBusCachedFieldWithArgBuilder<RETURN_TYPE, ARG_TYPE> builder() {
