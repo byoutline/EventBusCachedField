@@ -11,7 +11,7 @@ How to use
 ##### Including dependency #####
 Add to your ```build.gradle```:
 ```groovy
-compile 'com.byoutline.eventbuscachedfield:eventbuscachedfield:0.9.0'
+compile 'com.byoutline.eventbuscachedfield:eventbuscachedfield:0.9.2'
 ```
 
 ##### Init common settings #####
