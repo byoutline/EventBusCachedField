@@ -1,5 +1,3 @@
-Lib and readme in development, not yet on maven central.
-
 # EventBusCachedField
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.byoutline.eventbuscachedfield/eventbuscachedfield/badge.svg?style=flat)](http://mvnrepository.com/artifact/com.byoutline.eventbuscachedfield/eventbuscachedfield)
 [![Coverage Status](https://coveralls.io/repos/byoutline/EventBusCachedField/badge.svg?branch=master)](https://coveralls.io/r/byoutline/EventBusCachedField?branch=master)
@@ -13,7 +11,7 @@ How to use
 ##### Including dependency #####
 Add to your ```build.gradle```:
 ```groovy
-compile 'com.byoutline.eventbuscachedfield:eventbuscachedfield:1.0.0'
+compile 'com.byoutline.eventbuscachedfield:eventbuscachedfield:0.9.2'
 ```
 
 ##### Init common settings #####
