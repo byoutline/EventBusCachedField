@@ -1,5 +1,9 @@
 package com.byoutline.eventbuscachedfield;
 
+import com.byoutline.cachedfield.ProviderWithArg;
+import com.byoutline.cachedfield.dbcache.DbCachedValueProvider;
+import com.byoutline.cachedfield.dbcache.DbWriter;
+import com.byoutline.cachedfield.dbcache.FetchType;
 import com.byoutline.eventbuscachedfield.internal.EventIBus;
 import com.byoutline.eventcallback.ResponseEvent;
 import com.byoutline.ibuscachedfield.internal.ErrorEvent;
@@ -30,6 +34,39 @@ public class EventBusCachedFieldBuilder<RETURN_TYPE> {
     public SuccessEvent withValueProvider(Provider<RETURN_TYPE> valueProvider) {
         this.valueGetter = valueProvider;
         return new SuccessEvent();
+    }
+
+
+    public DbCacheBuilderReader<RETURN_TYPE> withDbReader(Provider<RETURN_TYPE> dbValueProvider) {
+        return new DbCacheBuilderReader<RETURN_TYPE>(dbValueProvider);
+    }
+
+    public static class DbCacheBuilderReader<RETURN_TYPE> {
+        private final Provider<RETURN_TYPE> dbValueProvider;
+
+        public DbCacheBuilderReader(Provider<RETURN_TYPE> dbValueProvider) {
+            this.dbValueProvider = dbValueProvider;
+        }
+
+        public DbCacheBuilderWriter withDbWriter(DbWriter<RETURN_TYPE> dbSaver) {
+            return new DbCacheBuilderWriter(dbValueProvider, dbSaver);
+        }
+    }
+
+    public static class DbCacheBuilderWriter<RETURN_TYPE> {
+        private final Provider<RETURN_TYPE> dbValueProvider;
+        private final DbWriter<RETURN_TYPE> dbSaver;
+
+        public DbCacheBuilderWriter(Provider<RETURN_TYPE> dbValueProvider, DbWriter<RETURN_TYPE> dbSaver) {
+            this.dbValueProvider = dbValueProvider;
+            this.dbSaver = dbSaver;
+        }
+        public EventBusCachedFieldWithArgBuilder.SuccessEvent withApiFetcher(Provider<RETURN_TYPE> apiValueProvider) {
+            ProviderWithArg<RETURN_TYPE, FetchType> valueProvider =
+                    new DbCachedValueProvider<RETURN_TYPE>(apiValueProvider, dbSaver, dbValueProvider);
+            return new EventBusCachedFieldWithArgBuilder<RETURN_TYPE, FetchType>()
+                    .withValueProvider(valueProvider);
+        }
     }
 
     public class SuccessEvent {

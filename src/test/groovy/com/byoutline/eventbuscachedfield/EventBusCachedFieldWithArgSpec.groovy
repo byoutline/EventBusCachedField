@@ -17,12 +17,11 @@ import javax.inject.Provider
 class EventBusCachedFieldWithArgSpec extends spock.lang.Specification {
     @Shared
     Map<Integer, String> argToValueMap = [1: 'a', 2: 'b']
-    @Shared
     ResponseEventWithArg<String, Integer> successEvent
     ResponseEventWithArg<Exception, Integer> errorEvent
     EventBus bus
 
-    static void postAndWaitUntilFieldStopsLoading(CachedFieldWithArg field, int arg) {
+    static <ARG_TYPE> void postAndWaitUntilFieldStopsLoading(CachedFieldWithArg<?, ARG_TYPE> field, ARG_TYPE arg) {
         boolean duringValueLoad = true
         def listener = { FieldState newState ->
             if (newState == FieldState.NOT_LOADED || newState == FieldState.LOADED) {
