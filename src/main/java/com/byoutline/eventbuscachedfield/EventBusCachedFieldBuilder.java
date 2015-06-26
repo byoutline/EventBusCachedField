@@ -138,16 +138,6 @@ public class EventBusCachedFieldBuilder<RETURN_TYPE> {
         }
     }
 
-    public class Builder {
-
-        private Builder() {
-        }
-
-        public EventBusCachedField<RETURN_TYPE> build() {
-            return EventBusCachedFieldBuilder.this.build();
-        }
-    }
-
     private EventBusCachedField<RETURN_TYPE> build() {
         return new EventBusCachedField<RETURN_TYPE>(sessionIdProvider, valueGetter,
                 successEvent, errorEvent, new EventIBus(bus),

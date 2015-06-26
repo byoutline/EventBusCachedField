@@ -95,16 +95,6 @@ public class EventBusCachedFieldWithArgBuilder<RETURN_TYPE, ARG_TYPE> {
         }
     }
 
-    public class Builder {
-
-        private Builder() {
-        }
-
-        public EventBusCachedFieldWithArg<RETURN_TYPE, ARG_TYPE> build() {
-            return EventBusCachedFieldWithArgBuilder.this.build();
-        }
-    }
-
     private EventBusCachedFieldWithArg<RETURN_TYPE, ARG_TYPE> build() {
         return new EventBusCachedFieldWithArg<RETURN_TYPE, ARG_TYPE>(sessionIdProvider, valueGetter,
                 successEvent, errorEvent, new EventIBus(bus),
