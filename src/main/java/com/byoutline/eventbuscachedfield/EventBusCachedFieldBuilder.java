@@ -67,6 +67,7 @@ public class EventBusCachedFieldBuilder<RETURN_TYPE> {
             this.dbValueProvider = dbValueProvider;
             this.dbSaver = dbSaver;
         }
+
         public EventBusCachedFieldWithArgBuilder.SuccessEvent withApiFetcher(Provider<RETURN_TYPE> apiValueProvider) {
             ProviderWithArg<RETURN_TYPE, FetchType> valueProvider =
                     new DbCachedValueProvider<RETURN_TYPE>(apiValueProvider, dbSaver, dbValueProvider);
@@ -91,14 +92,14 @@ public class EventBusCachedFieldBuilder<RETURN_TYPE> {
         private ErrorEventSetter() {
         }
 
-        public CustomSessionIdProvider withGenericErrorEvent(Object errorEvent) {
+        public OverrideDefaultsSetter withGenericErrorEvent(Object errorEvent) {
             EventBusCachedFieldBuilder.this.errorEvent = ErrorEvent.genericEvent(errorEvent);
-            return new CustomSessionIdProvider();
+            return new OverrideDefaultsSetter();
         }
 
-        public CustomSessionIdProvider withResponseErrorEvent(ResponseEvent<Exception> errorEvent) {
+        public OverrideDefaultsSetter withResponseErrorEvent(ResponseEvent<Exception> errorEvent) {
             EventBusCachedFieldBuilder.this.errorEvent = ErrorEvent.responseEvent(errorEvent);
-            return new CustomSessionIdProvider();
+            return new OverrideDefaultsSetter();
         }
 
         public EventBusCachedField<RETURN_TYPE> build() {
@@ -107,29 +108,29 @@ public class EventBusCachedFieldBuilder<RETURN_TYPE> {
         }
     }
 
-    public class CustomSessionIdProvider {
+    public class OverrideDefaultsSetter {
 
-        private CustomSessionIdProvider() {
+        private OverrideDefaultsSetter() {
         }
 
-        public CustomBus withCustomSessionIdProvider(Provider<String> sessionIdProvider) {
+        public OverrideDefaultsSetter withCustomSessionIdProvider(Provider<String> sessionIdProvider) {
             EventBusCachedFieldBuilder.this.sessionIdProvider = sessionIdProvider;
-            return new CustomBus();
+            return this;
         }
 
-        public EventBusCachedField<RETURN_TYPE> build() {
-            return EventBusCachedFieldBuilder.this.build();
-        }
-    }
-
-    public class CustomBus {
-
-        private CustomBus() {
-        }
-
-        public Builder withCustomBus(EventBus bus) {
+        public OverrideDefaultsSetter withCustomBus(EventBus bus) {
             EventBusCachedFieldBuilder.this.bus = bus;
-            return new Builder();
+            return this;
+        }
+
+        public OverrideDefaultsSetter withCustomValueGetterExecutor(ExecutorService valueGetterExecutor) {
+            EventBusCachedFieldBuilder.this.valueGetterExecutor = valueGetterExecutor;
+            return this;
+        }
+
+        public OverrideDefaultsSetter withCustomStateListenerExecutor(Executor stateListenerExecutor) {
+            EventBusCachedFieldBuilder.this.stateListenerExecutor = stateListenerExecutor;
+            return this;
         }
 
         public EventBusCachedField<RETURN_TYPE> build() {

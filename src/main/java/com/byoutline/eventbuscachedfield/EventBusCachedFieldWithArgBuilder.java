@@ -55,9 +55,9 @@ public class EventBusCachedFieldWithArgBuilder<RETURN_TYPE, ARG_TYPE> {
         private ErrorEventSetter() {
         }
 
-        public CustomSessionIdProvider withResponseErrorEvent(@Nullable ResponseEventWithArg<Exception, ARG_TYPE> errorEvent) {
+        public OverrideDefaultsSetter withResponseErrorEvent(@Nullable ResponseEventWithArg<Exception, ARG_TYPE> errorEvent) {
             EventBusCachedFieldWithArgBuilder.this.errorEvent = errorEvent;
-            return new CustomSessionIdProvider();
+            return new OverrideDefaultsSetter();
         }
 
         public EventBusCachedFieldWithArg<RETURN_TYPE, ARG_TYPE> build() {
@@ -65,29 +65,29 @@ public class EventBusCachedFieldWithArgBuilder<RETURN_TYPE, ARG_TYPE> {
         }
     }
 
-    public class CustomSessionIdProvider {
+    public class OverrideDefaultsSetter {
 
-        private CustomSessionIdProvider() {
+        private OverrideDefaultsSetter() {
         }
 
-        public CustomBus withCustomSessionIdProvider(Provider<String> sessionIdProvider) {
+        public OverrideDefaultsSetter withCustomSessionIdProvider(Provider<String> sessionIdProvider) {
             EventBusCachedFieldWithArgBuilder.this.sessionIdProvider = sessionIdProvider;
-            return new CustomBus();
+            return this;
         }
 
-        public EventBusCachedFieldWithArg<RETURN_TYPE, ARG_TYPE> build() {
-            return EventBusCachedFieldWithArgBuilder.this.build();
-        }
-    }
-
-    public class CustomBus {
-
-        private CustomBus() {
-        }
-
-        public Builder withCustomBus(EventBus bus) {
+        public OverrideDefaultsSetter withCustomBus(EventBus bus) {
             EventBusCachedFieldWithArgBuilder.this.bus = bus;
-            return new Builder();
+            return this;
+        }
+
+        public OverrideDefaultsSetter withCustomValueGetterExecutor(ExecutorService valueGetterExecutor) {
+            EventBusCachedFieldWithArgBuilder.this.valueGetterExecutor = valueGetterExecutor;
+            return this;
+        }
+
+        public OverrideDefaultsSetter withCustomStateListenerExecutor(Executor stateListenerExecutor) {
+            EventBusCachedFieldWithArgBuilder.this.stateListenerExecutor = stateListenerExecutor;
+            return this;
         }
 
         public EventBusCachedFieldWithArg<RETURN_TYPE, ARG_TYPE> build() {
