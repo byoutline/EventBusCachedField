@@ -10,6 +10,8 @@ import com.byoutline.ibuscachedfield.internal.ErrorEvent;
 import de.greenrobot.event.EventBus;
 
 import javax.inject.Provider;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 
 /**
  * Fluent interface builder of {@link EventBusCachedField}. If you do not like
@@ -25,10 +27,14 @@ public class EventBusCachedFieldBuilder<RETURN_TYPE> {
     private ErrorEvent errorEvent;
     private Provider<String> sessionIdProvider;
     private EventBus bus;
+    private ExecutorService valueGetterExecutor;
+    private Executor stateListenerExecutor;
 
     public EventBusCachedFieldBuilder() {
         bus = EventBusCachedField.defaultBus;
         sessionIdProvider = EventBusCachedField.defaultSessionIdProvider;
+        valueGetterExecutor = EventBusCachedField.defaultValueGetterExecutor;
+        stateListenerExecutor = EventBusCachedField.defaultStateListenerExecutor;
     }
 
     public SuccessEvent withValueProvider(Provider<RETURN_TYPE> valueProvider) {
@@ -142,6 +148,8 @@ public class EventBusCachedFieldBuilder<RETURN_TYPE> {
     }
 
     private EventBusCachedField<RETURN_TYPE> build() {
-        return new EventBusCachedField<RETURN_TYPE>(sessionIdProvider, valueGetter, successEvent, errorEvent, new EventIBus(bus));
+        return new EventBusCachedField<RETURN_TYPE>(sessionIdProvider, valueGetter,
+                successEvent, errorEvent, new EventIBus(bus),
+                valueGetterExecutor, stateListenerExecutor);
     }
 }
