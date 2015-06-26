@@ -7,6 +7,8 @@ import com.byoutline.ibuscachedfield.internal.IBusErrorListenerWithArg;
 import com.byoutline.ibuscachedfield.internal.IBusSuccessListenerWithArg;
 
 import javax.inject.Provider;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 
 /**
  * {@link CachedField} implementation that posts calculated result on Otto bus.<br />
@@ -21,11 +23,13 @@ public class EventBusCachedFieldWithArg<RETURN_TYPE, ARG_TYPE> extends CachedFie
     EventBusCachedFieldWithArg(Provider<String> sessionIdProvider,
                                ProviderWithArg<RETURN_TYPE, ARG_TYPE> valueGetter,
                                ResponseEventWithArg<RETURN_TYPE, ARG_TYPE> successEvent,
-                               ResponseEventWithArg<Exception, ARG_TYPE> errorEvent, EventIBus bus) {
+                               ResponseEventWithArg<Exception, ARG_TYPE> errorEvent, EventIBus bus,
+                               ExecutorService valueGetterExecutor, Executor stateListenerExecutor) {
         super(sessionIdProvider,
                 valueGetter,
                 new IBusSuccessListenerWithArg<RETURN_TYPE, ARG_TYPE>(bus, successEvent),
-                new IBusErrorListenerWithArg<ARG_TYPE>(bus, errorEvent));
+                new IBusErrorListenerWithArg<ARG_TYPE>(bus, errorEvent),
+                valueGetterExecutor, stateListenerExecutor);
     }
 
     public static <RETURN_TYPE, ARG_TYPE> EventBusCachedFieldWithArgBuilder<RETURN_TYPE, ARG_TYPE> builder() {

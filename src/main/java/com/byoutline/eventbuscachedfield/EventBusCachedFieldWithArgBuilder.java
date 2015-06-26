@@ -7,6 +7,8 @@ import de.greenrobot.event.EventBus;
 
 import javax.annotation.Nullable;
 import javax.inject.Provider;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 
 /**
  * Fluent interface builder of {@link EventBusCachedField}. If you do not like
@@ -22,10 +24,14 @@ public class EventBusCachedFieldWithArgBuilder<RETURN_TYPE, ARG_TYPE> {
     private ResponseEventWithArg<Exception, ARG_TYPE> errorEvent;
     private Provider<String> sessionIdProvider;
     private EventBus bus;
+    private ExecutorService valueGetterExecutor;
+    private Executor stateListenerExecutor;
 
     public EventBusCachedFieldWithArgBuilder() {
         bus = EventBusCachedField.defaultBus;
         sessionIdProvider = EventBusCachedField.defaultSessionIdProvider;
+        valueGetterExecutor = EventBusCachedField.defaultValueGetterExecutor;
+        stateListenerExecutor = EventBusCachedField.defaultStateListenerExecutor;
     }
 
     public SuccessEvent withValueProvider(ProviderWithArg<RETURN_TYPE, ARG_TYPE> valueProvider) {
@@ -100,6 +106,8 @@ public class EventBusCachedFieldWithArgBuilder<RETURN_TYPE, ARG_TYPE> {
     }
 
     private EventBusCachedFieldWithArg<RETURN_TYPE, ARG_TYPE> build() {
-        return new EventBusCachedFieldWithArg<RETURN_TYPE, ARG_TYPE>(sessionIdProvider, valueGetter, successEvent, errorEvent, new EventIBus(bus));
+        return new EventBusCachedFieldWithArg<RETURN_TYPE, ARG_TYPE>(sessionIdProvider, valueGetter,
+                successEvent, errorEvent, new EventIBus(bus),
+                valueGetterExecutor, stateListenerExecutor);
     }
 }
