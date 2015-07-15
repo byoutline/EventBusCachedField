@@ -43,34 +43,34 @@ public class EventBusCachedFieldBuilder<RETURN_TYPE> {
     }
 
 
-    public DbCacheBuilderReader<RETURN_TYPE> withDbReader(Provider<RETURN_TYPE> dbValueProvider) {
-        return new DbCacheBuilderReader<RETURN_TYPE>(dbValueProvider);
+    public <API_RETURN_TYPE> DbCacheBuilderReader<API_RETURN_TYPE, RETURN_TYPE> withApiFetcher(Provider<API_RETURN_TYPE> apiValueProvider) {
+        return new DbCacheBuilderReader<API_RETURN_TYPE, RETURN_TYPE>(apiValueProvider);
     }
 
-    public static class DbCacheBuilderReader<RETURN_TYPE> {
-        private final Provider<RETURN_TYPE> dbValueProvider;
+    public static class DbCacheBuilderReader<API_RETURN_TYPE, RETURN_TYPE> {
+        private final Provider<API_RETURN_TYPE> apiValueProvider;
 
-        public DbCacheBuilderReader(Provider<RETURN_TYPE> dbValueProvider) {
-            this.dbValueProvider = dbValueProvider;
+        public DbCacheBuilderReader(Provider<API_RETURN_TYPE> apiValueProvider) {
+            this.apiValueProvider = apiValueProvider;
         }
 
-        public DbCacheBuilderWriter withDbWriter(DbWriter<RETURN_TYPE> dbSaver) {
-            return new DbCacheBuilderWriter(dbValueProvider, dbSaver);
+        public <API_RETURN_TYPE> DbCacheBuilderWriter<API_RETURN_TYPE, RETURN_TYPE> withDbWriter(DbWriter<API_RETURN_TYPE> dbSaver) {
+            return new DbCacheBuilderWriter(apiValueProvider, dbSaver);
         }
     }
 
-    public static class DbCacheBuilderWriter<RETURN_TYPE> {
-        private final Provider<RETURN_TYPE> dbValueProvider;
-        private final DbWriter<RETURN_TYPE> dbSaver;
+    public static class DbCacheBuilderWriter<API_RETURN_TYPE, RETURN_TYPE> {
+        private final Provider<API_RETURN_TYPE> apiValueProvider;
+        private final DbWriter<API_RETURN_TYPE> dbSaver;
 
-        public DbCacheBuilderWriter(Provider<RETURN_TYPE> dbValueProvider, DbWriter<RETURN_TYPE> dbSaver) {
-            this.dbValueProvider = dbValueProvider;
+        public DbCacheBuilderWriter(Provider<API_RETURN_TYPE> apiValueProvider, DbWriter<API_RETURN_TYPE> dbSaver) {
+            this.apiValueProvider = apiValueProvider;
             this.dbSaver = dbSaver;
         }
 
-        public EventBusCachedFieldWithArgBuilder.SuccessEvent withApiFetcher(Provider<RETURN_TYPE> apiValueProvider) {
+        public EventBusCachedFieldWithArgBuilder.SuccessEvent withDbReader(Provider<RETURN_TYPE> dbValueProvider) {
             ProviderWithArg<RETURN_TYPE, FetchType> valueProvider =
-                    new DbCachedValueProvider<RETURN_TYPE>(apiValueProvider, dbSaver, dbValueProvider);
+                    new DbCachedValueProvider<API_RETURN_TYPE, RETURN_TYPE>(apiValueProvider, dbSaver, dbValueProvider);
             return new EventBusCachedFieldWithArgBuilder<RETURN_TYPE, FetchType>()
                     .withValueProvider(valueProvider);
         }

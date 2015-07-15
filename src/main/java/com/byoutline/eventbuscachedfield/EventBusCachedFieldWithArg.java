@@ -1,6 +1,8 @@
 package com.byoutline.eventbuscachedfield;
 
-import com.byoutline.cachedfield.*;
+import com.byoutline.cachedfield.CachedField;
+import com.byoutline.cachedfield.CachedFieldWithArgImpl;
+import com.byoutline.cachedfield.ProviderWithArg;
 import com.byoutline.eventbuscachedfield.internal.EventIBus;
 import com.byoutline.ibuscachedfield.events.ResponseEventWithArg;
 import com.byoutline.ibuscachedfield.internal.IBusErrorListenerWithArg;
@@ -15,7 +17,7 @@ import java.util.concurrent.ExecutorService;
  * Use {@link #builder()} to create instances.
  *
  * @param <RETURN_TYPE> Type of cached value.
- * @param <ARG_TYPE> Type of argument that needs to be passed to calculate value.
+ * @param <ARG_TYPE>    Type of argument that needs to be passed to calculate value.
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
  */
 public class EventBusCachedFieldWithArg<RETURN_TYPE, ARG_TYPE> extends CachedFieldWithArgImpl<RETURN_TYPE, ARG_TYPE> {

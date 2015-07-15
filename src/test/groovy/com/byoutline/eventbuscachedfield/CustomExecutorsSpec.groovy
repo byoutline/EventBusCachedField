@@ -32,7 +32,7 @@ class CustomExecutorsSpec extends spock.lang.Specification {
         given:
         boolean called = false
         ResponseEvent<String> successEvent = new ResponseEventImpl<>()
-        ResponseEvent<Exception>errorEvent = new ResponseEventImpl<>()
+        ResponseEvent<Exception> errorEvent = new ResponseEventImpl<>()
         ExecutorService executor = [
                 submit: { called = true; return new FutureTask((Runnable) it, null); }
         ] as ExecutorService
@@ -54,7 +54,7 @@ class CustomExecutorsSpec extends spock.lang.Specification {
         given:
         boolean called = false
         ResponseEvent<String> successEvent = new ResponseEventImpl<>()
-        ResponseEvent<Exception>errorEvent = new ResponseEventImpl<>()
+        ResponseEvent<Exception> errorEvent = new ResponseEventImpl<>()
         Executor stateListenersExecutor = { called = true; it.run() } as Executor
         EventBusCachedField field = EventBusCachedField.builder()
                 .withValueProvider(MockFactory.getStringGetter(value))
