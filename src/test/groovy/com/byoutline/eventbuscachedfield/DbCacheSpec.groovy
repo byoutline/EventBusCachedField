@@ -71,18 +71,18 @@ class DbCacheSpec extends spock.lang.Specification {
     def "should allow different return type for DB and API"() {
         given:
         def dbSaver = {} as DbWriter
-        EventBusCachedFieldWithArg<String, FetchType> field = EventBusCachedField.<String> builder()
+        def event = new ResponseEventWithArgImpl<Integer, FetchType>()
+        EventBusCachedFieldWithArg<Integer, FetchType> field = EventBusCachedField.<String> builder()
                 .withApiFetcher(MockFactory.getStringGetter(value))
                 .withDbWriter(dbSaver)
                 .withDbReader({ return 1 } as Provider<Integer>)
-                .withSuccessEvent(successEvent)
-                .withResponseErrorEvent(errorEvent)
+                .withSuccessEvent(event)
                 .build();
 
         when:
         EventBusCachedFieldWithArgSpec.postAndWaitUntilFieldStopsLoading(field, FetchType.API)
 
         then:
-        successEvent.getResponse() == 1
+        event.getResponse() == 1
     }
 }
