@@ -45,8 +45,8 @@ public class EventBusCachedFieldBuilder<RETURN_TYPE> extends IBusCachedFieldBuil
             this.apiValueProvider = apiValueProvider;
         }
 
-        public <API_RETURN_TYPE> DbCacheBuilderWriter<API_RETURN_TYPE, RETURN_TYPE> withDbWriter(DbWriter<API_RETURN_TYPE> dbSaver) {
-            return new DbCacheBuilderWriter(apiValueProvider, dbSaver);
+        public DbCacheBuilderWriter<API_RETURN_TYPE, RETURN_TYPE> withDbWriter(DbWriter<API_RETURN_TYPE> dbSaver) {
+            return new DbCacheBuilderWriter<API_RETURN_TYPE, RETURN_TYPE>(apiValueProvider, dbSaver);
         }
     }
 
