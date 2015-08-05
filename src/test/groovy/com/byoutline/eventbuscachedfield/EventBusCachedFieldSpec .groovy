@@ -37,6 +37,8 @@ class EventBusCachedFieldSpec extends spock.lang.Specification {
             sleep 1
         }
         field.removeStateListener(listener)
+        // allow thread switch from state listener executor to success listener
+        sleep 1
     }
 
     def setup() {
