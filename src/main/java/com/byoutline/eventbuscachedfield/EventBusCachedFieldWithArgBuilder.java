@@ -1,11 +1,15 @@
 package com.byoutline.eventbuscachedfield;
 
+import com.byoutline.cachedfield.CachedFieldWithArg;
 import com.byoutline.cachedfield.ProviderWithArg;
+import com.byoutline.cachedfield.dbcache.DbCacheArg;
+import com.byoutline.cachedfield.dbcache.DbCachedValueProviderWithArg;
+import com.byoutline.cachedfield.dbcache.DbWriterWithArg;
 import com.byoutline.eventbuscachedfield.internal.EventIBus;
+import com.byoutline.ibuscachedfield.IBusCachedFieldWithArgBuilder;
 import com.byoutline.ibuscachedfield.events.ResponseEventWithArg;
 import de.greenrobot.event.EventBus;
 
-import javax.annotation.Nullable;
 import javax.inject.Provider;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
@@ -17,87 +21,56 @@ import java.util.concurrent.ExecutorService;
  * @param <RETURN_TYPE> Type of object to be cached.
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
  */
-public class EventBusCachedFieldWithArgBuilder<RETURN_TYPE, ARG_TYPE> {
-
-    private ProviderWithArg<RETURN_TYPE, ARG_TYPE> valueGetter;
-    private ResponseEventWithArg<RETURN_TYPE, ARG_TYPE> successEvent;
-    private ResponseEventWithArg<Exception, ARG_TYPE> errorEvent;
-    private Provider<String> sessionIdProvider;
-    private EventBus bus;
-    private ExecutorService valueGetterExecutor;
-    private Executor stateListenerExecutor;
+public class EventBusCachedFieldWithArgBuilder<RETURN_TYPE, ARG_TYPE> extends IBusCachedFieldWithArgBuilder<RETURN_TYPE, ARG_TYPE, EventBus> {
 
     public EventBusCachedFieldWithArgBuilder() {
-        bus = EventBusCachedField.defaultBus;
-        sessionIdProvider = EventBusCachedField.defaultSessionIdProvider;
-        valueGetterExecutor = EventBusCachedField.defaultValueGetterExecutor;
-        stateListenerExecutor = EventBusCachedField.defaultStateListenerExecutor;
+        super(new ConstructorWrapper<RETURN_TYPE, ARG_TYPE>(),
+                EventBusCachedField.defaultBus,
+                EventBusCachedField.defaultSessionIdProvider,
+                EventBusCachedField.defaultValueGetterExecutor,
+                EventBusCachedField.defaultStateListenerExecutor);
     }
 
-    public SuccessEvent withValueProvider(ProviderWithArg<RETURN_TYPE, ARG_TYPE> valueProvider) {
-        this.valueGetter = valueProvider;
-        return new SuccessEvent();
+
+    public <API_RETURN_TYPE> DbCacheBuilderReader<API_RETURN_TYPE, RETURN_TYPE, ARG_TYPE> withApiFetcher(ProviderWithArg<API_RETURN_TYPE, ARG_TYPE> apiValueProvider) {
+        return new DbCacheBuilderReader<API_RETURN_TYPE, RETURN_TYPE, ARG_TYPE>(apiValueProvider);
     }
 
-    public class SuccessEvent {
+    public static class DbCacheBuilderReader<API_RETURN_TYPE, RETURN_TYPE, ARG_TYPE> {
+        private final ProviderWithArg<API_RETURN_TYPE, ARG_TYPE> apiValueProvider;
 
-        private SuccessEvent() {
+        public DbCacheBuilderReader(ProviderWithArg<API_RETURN_TYPE, ARG_TYPE> apiValueProvider) {
+            this.apiValueProvider = apiValueProvider;
         }
 
-        public ErrorEventSetter withSuccessEvent(ResponseEventWithArg<RETURN_TYPE, ARG_TYPE> successEvent) {
-            EventBusCachedFieldWithArgBuilder.this.successEvent = successEvent;
-            return new ErrorEventSetter();
-        }
-    }
-
-    public class ErrorEventSetter {
-
-        private ErrorEventSetter() {
-        }
-
-        public OverrideDefaultsSetter withResponseErrorEvent(@Nullable ResponseEventWithArg<Exception, ARG_TYPE> errorEvent) {
-            EventBusCachedFieldWithArgBuilder.this.errorEvent = errorEvent;
-            return new OverrideDefaultsSetter();
-        }
-
-        public EventBusCachedFieldWithArg<RETURN_TYPE, ARG_TYPE> build() {
-            return EventBusCachedFieldWithArgBuilder.this.build();
+        public DbCacheBuilderWriter<API_RETURN_TYPE, RETURN_TYPE, ARG_TYPE> withDbWriter(DbWriterWithArg<API_RETURN_TYPE, ARG_TYPE> dbSaver) {
+            return new DbCacheBuilderWriter<API_RETURN_TYPE, RETURN_TYPE, ARG_TYPE>(apiValueProvider, dbSaver);
         }
     }
 
-    public class OverrideDefaultsSetter {
+    public static class DbCacheBuilderWriter<API_RETURN_TYPE, RETURN_TYPE, ARG_TYPE> {
+        private final ProviderWithArg<API_RETURN_TYPE, ARG_TYPE> apiValueProvider;
+        private final DbWriterWithArg<API_RETURN_TYPE, ARG_TYPE> dbSaver;
 
-        private OverrideDefaultsSetter() {
+        public DbCacheBuilderWriter(ProviderWithArg<API_RETURN_TYPE, ARG_TYPE> apiValueProvider, DbWriterWithArg<API_RETURN_TYPE, ARG_TYPE> dbSaver) {
+            this.apiValueProvider = apiValueProvider;
+            this.dbSaver = dbSaver;
         }
 
-        public OverrideDefaultsSetter withCustomSessionIdProvider(Provider<String> sessionIdProvider) {
-            EventBusCachedFieldWithArgBuilder.this.sessionIdProvider = sessionIdProvider;
-            return this;
-        }
-
-        public OverrideDefaultsSetter withCustomBus(EventBus bus) {
-            EventBusCachedFieldWithArgBuilder.this.bus = bus;
-            return this;
-        }
-
-        public OverrideDefaultsSetter withCustomValueGetterExecutor(ExecutorService valueGetterExecutor) {
-            EventBusCachedFieldWithArgBuilder.this.valueGetterExecutor = valueGetterExecutor;
-            return this;
-        }
-
-        public OverrideDefaultsSetter withCustomStateListenerExecutor(Executor stateListenerExecutor) {
-            EventBusCachedFieldWithArgBuilder.this.stateListenerExecutor = stateListenerExecutor;
-            return this;
-        }
-
-        public EventBusCachedFieldWithArg<RETURN_TYPE, ARG_TYPE> build() {
-            return EventBusCachedFieldWithArgBuilder.this.build();
+        public IBusCachedFieldWithArgBuilder.SuccessEvent withDbReader(ProviderWithArg<RETURN_TYPE, ARG_TYPE> dbValueProvider) {
+            ProviderWithArg<RETURN_TYPE, DbCacheArg<ARG_TYPE>> valueProvider = new DbCachedValueProviderWithArg<API_RETURN_TYPE, RETURN_TYPE, ARG_TYPE>(apiValueProvider, dbSaver, dbValueProvider);
+            return new EventBusCachedFieldWithArgBuilder<RETURN_TYPE, DbCacheArg<ARG_TYPE>>()
+                    .withValueProvider(valueProvider);
         }
     }
 
-    private EventBusCachedFieldWithArg<RETURN_TYPE, ARG_TYPE> build() {
-        return new EventBusCachedFieldWithArg<RETURN_TYPE, ARG_TYPE>(sessionIdProvider, valueGetter,
-                successEvent, errorEvent, new EventIBus(bus),
-                valueGetterExecutor, stateListenerExecutor);
+    private static class ConstructorWrapper<RETURN_TYPE, ARG_TYPE> implements com.byoutline.ibuscachedfield.builders.CachedFieldWithArgConstructorWrapper<RETURN_TYPE, ARG_TYPE, EventBus> {
+        @Override
+        public CachedFieldWithArg<RETURN_TYPE, ARG_TYPE> build(Provider<String> sessionIdProvider, ProviderWithArg<RETURN_TYPE, ARG_TYPE> valueGetter, ResponseEventWithArg<RETURN_TYPE, ARG_TYPE> successEvent, ResponseEventWithArg<Exception, ARG_TYPE> errorEvent, EventBus eventBus, ExecutorService valueGetterExecutor, Executor stateListenerExecutor) {
+            return new EventBusCachedFieldWithArg<RETURN_TYPE, ARG_TYPE>(sessionIdProvider, valueGetter,
+                    successEvent, errorEvent,
+                    new EventIBus(eventBus),
+                    valueGetterExecutor, stateListenerExecutor);
+        }
     }
 }
